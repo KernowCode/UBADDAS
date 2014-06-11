@@ -15,6 +15,7 @@ Benefits
 * Guiding - consume first testing with strict structure helps discover the domain entities and commands
 * Readable - single appropriately named methods result in simple to read tests and output
 * Reusable - delegate calls to methods aid reusability
+* Agnostic - specify architecture layer to target test i.e. Presentation, Web API.
 
 Example console output
 ```C#
