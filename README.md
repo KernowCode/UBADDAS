@@ -29,7 +29,7 @@ Usage - Test Code
 ```C#
 namespace TestProject
 {
-  [estClass]
+  [TestClass]
   public class Test1 : TestFeatureBase
   {
     public override ApplicationLayer()
