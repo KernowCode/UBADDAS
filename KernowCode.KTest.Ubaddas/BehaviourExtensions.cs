@@ -15,14 +15,14 @@ namespace KernowCode.KTest.Ubaddas
         public static T And<T>(this T behaviour, Action domainEntityCommand) where T : ITense
         {
             behaviour.GetType().GetMethod("DoBehaviour", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(
-                behaviour, new object[] { "And", domainEntityCommand });
+                behaviour, new object[] { "and", domainEntityCommand });
             return behaviour;
         }
 
         public static T And<T>(this T behaviour, Action<ISet> actionSet) where T : ITense
         {
             behaviour.GetType().GetMethod("DoBehaviourSet", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(
-                behaviour, new object[] { "And", actionSet });
+                behaviour, new object[] { "and", actionSet });
             return behaviour;
         }     
     }

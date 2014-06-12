@@ -16,11 +16,17 @@ namespace KernowCode.KTest.Ubaddas
             Narrate = true;
         }
 
+        private static string HelpCreateLine(string term, string content)
+        {
+            var padding = new string(' ', LeftSectionPadding - term.Length);
+            return padding + (term + content).ExpandToReadable();
+        }
+
         private void As(IPersona persona) //this method invoked via reflection from BehaviourExtensions method
         {
             CurrentPersonaType = GetPersonaLayerType(persona);
             if (Narrate)
-                Console.WriteLine(string.Format("{0}{1}", "As".PadLeft(LeftSectionPadding), persona.Name()).ExpandToReadable());
+                Console.WriteLine(HelpCreateLine("as", Char.ToUpperInvariant(persona.Name()[0]) + persona.Name().Substring(1))); 
         }
 
         private Type GetPersonaLayerType(IPersona persona)
@@ -44,7 +50,7 @@ namespace KernowCode.KTest.Ubaddas
         private void DoBehaviourSet(string behaviour, Action<ISet> actionDelegate)
         {
             Narrate = false;
-            var rememberedPersona = CurrentPersonaType;            
+            var rememberedPersona = CurrentPersonaType;                   
             Console.Write(behaviour.PadLeft(LeftSectionPadding).ExpandToReadable() + " ");
             actionDelegate(this);
             CurrentPersonaType = rememberedPersona;
@@ -60,7 +66,7 @@ namespace KernowCode.KTest.Ubaddas
                     line = domainEntityCommand.Method.Name.Replace("_", " " + domainEntityCommand.Target.Name()).ExpandToReadable();
                 else
                     line = string.Format("{0} {1}", domainEntityCommand.Method.Name, domainEntityCommand.Target.Name()).ExpandToReadable();
-                Console.WriteLine(string.Format("{0}{1}", behaviour.PadLeft(LeftSectionPadding), line).ExpandToReadable());
+                Console.WriteLine(HelpCreateLine(behaviour, line));
             }
             var implementedDomain = CreatePersonaImplementation();
             SetDomainOnPersonaImplementation(domainEntityCommand, implementedDomain);
@@ -156,37 +162,37 @@ namespace KernowCode.KTest.Ubaddas
         
         public IGiven Given(Action domainEntityCommand)
         {
-            DoBehaviour("Given", domainEntityCommand);
+            DoBehaviour("given", domainEntityCommand);
             return this;
         }
         
         public IWhen When(Action domainEntityCommand)
         {
-            DoBehaviour("When", domainEntityCommand);
+            DoBehaviour("when", domainEntityCommand);
             return this;
         }
         
         public IThen Then(Action domainEntityCommand)
         {
-            DoBehaviour("Then", domainEntityCommand);
+            DoBehaviour("then", domainEntityCommand);
             return this;
         }
 
         public IGiven Given(Action<ISet> actionDelegate)
         {
-            DoBehaviourSet("Given", actionDelegate);
+            DoBehaviourSet("given", actionDelegate);
             return this;
         }
 
         public IWhen When(Action<ISet> actionDelegate)
         {
-            DoBehaviourSet("When", actionDelegate);
+            DoBehaviourSet("when", actionDelegate);
             return this;
         }
         
         public IThen Then(Action<ISet> actionDelegate)
         {
-            DoBehaviourSet("Then", actionDelegate);
+            DoBehaviourSet("then", actionDelegate);
             return this;
         }
 
@@ -196,7 +202,7 @@ namespace KernowCode.KTest.Ubaddas
             var testName = GetTestMethodName();
             testName = AddPrefix(testName);            
             Console.WriteLine("{0}", testName.ExpandToReadable());
-            Console.WriteLine(string.Format("{0}{1}", "So that".PadLeft(LeftSectionPadding), businessValue).ExpandToReadable());
+            Console.WriteLine(HelpCreateLine("so that", businessValue));
             return new Behaviour();
         }
 
@@ -222,7 +228,7 @@ namespace KernowCode.KTest.Ubaddas
             var reasonPrefixes = new[] { "IWantTo", "IWant", "InOrderTo", "InOrder" };
             if (reasonPrefixes.Any(x => reason.ToLower().StartsWith(x.ToLower())))
                 return reason;
-            return ("IWantTo".PadLeft(LeftSectionPadding) + reason).ExpandToReadable();
+            return HelpCreateLine("IWantTo", reason);
         }
 
         public bool Narrate { get; set; }
