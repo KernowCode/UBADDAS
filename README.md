@@ -70,8 +70,21 @@ namespace TestProject.Personas.PresentationLayer
     public Customer Customer { get; set; } //injected by framework
     public void Register()
     {
-      // your test code here. i.e. selenium or rest api calls
+      // your test code here. i.e. selenium
       var email = Customer.Email; //i.e. For registering with app
+    }
+    // other interface implementations
+  }
+}
+
+namespace TestProject.Personas.WebApi
+{
+  public partial class User : ICustomer
+  {
+    public Customer Customer { get; set; } //injected by framework
+    public void Register()
+    {
+      // your test code here. i.e. rest api calls
     }
     // other interface implementations
   }
