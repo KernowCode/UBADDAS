@@ -3,7 +3,7 @@ UBADDAS
 
 **User Behavior and Domain Driven Acceptance Stories**
 
-*This test framework concisely and coherently brings together the concepts of User Stories, Behaviour Driven Development, and Domain Driven Design. It simply provides a means to author test steps as Personas for each Entity Command. It executes these methods targeting the application layer of choice, resulting in succinct output of test results to the console.  The result are abstract and reusable behaviours that do not need to be rewritten to support other application layers and even different platform implementations.*
+*This test framework concisely and coherently brings together the concepts of User Stories, Behaviour Driven Development, and Domain Driven Design. It simply provides a means to author test steps as Personas for each Entity Command. It executes these methods targeting the application layer of choice, resulting in succinct output of test results to the console.  The results are abstract and reusable behaviours that do not need to be rewritten to support other application layers and even different platform implementations.*
 
 A C# Test Framework combining
 * As A, I Want, So That (User Stories)
@@ -27,31 +27,54 @@ I want to register a new user
 ```
 Usage - Test Code
 ```C#
-[Test]
-public void IWantToRegisterANewUser() {
-  var user = new User();
-  ICustomer customer = new Customer();
-  SoThat(MyBusinessValue.IncreaseCustomerBase)
-      .As(user)
-      .Given(customer.Register)
-      .When(customer.Confirm_Registration)
-      .Then(customer.Login);
-}
-
-public enum MyBusinessValue {
-  IncreaseCustomerBase
-}
-
-public partial class User : IPersona {
-}
-
-public partial class User : ICustomer {
-  public Customer Customer { get; set; } //injected by framework
-  public void Register() {
-    // your test code here. i.e. selenium or rest api calls
-    var email = Customer.Email; //i.e. For registering with app
+namespace TestProject
+{
+  [estClass]
+  public class Test1 : TestFeatureBase
+  {
+    public override ApplicationLayer()
+    {
+      return "PresentationLayer"; //could be other i.e. WebApi, possibly provided by App.Config
+    }
+    
+    [Test]
+    public void IWantToRegisterANewUser()
+    {
+      var user = new User();
+      ICustomer customer = new Customer();
+      SoThat(MyBusinessValue.IncreaseCustomerBase)
+        .As(user)
+        .Given(customer.Register)
+        .When(customer.Confirm_Registration)
+        .Then(customer.Login);
+    }
+  
+    public enum MyBusinessValue
+    {
+      IncreaseCustomerBase
+    }
   }
-  // other interface implementations
+}
+
+namespace TestProject.Personas
+{
+  public partial class User : IPersona
+  {
+  }
+}
+
+namespace TestProject.Personas.PresentationLayer
+{
+  public partial class User : ICustomer
+  {
+    public Customer Customer { get; set; } //injected by framework
+    public void Register()
+    {
+      // your test code here. i.e. selenium or rest api calls
+      var email = Customer.Email; //i.e. For registering with app
+    }
+    // other interface implementations
+  }
 }
 ```
 Usage - Production Code
