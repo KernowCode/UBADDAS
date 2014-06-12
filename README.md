@@ -3,19 +3,18 @@ UBADDAS
 
 **User Behavior and Domain Driven Acceptance Stories**
 
-*This test framework concisely and coherently brings together the concepts of User Stories, Behaviour Driven Development, and Domain Driven Design.  It simply provides a means to author test steps as Personas for each Entity Command and executes these methods in the target application layer throughout the test with succinct output of test results to the console. All in a few lines of code that really help.*
+*This test framework concisely and coherently brings together the concepts of User Stories, Behaviour Driven Development, and Domain Driven Design. It simply provides a means to author test steps as Personas for each Entity Command. It executes these methods targeting the application layer of choice, resulting in succinct output of test results to the console.  The result is abstract and reusable behaviours that do not need to be rewritten to support other application layers or event platform implementations.*
 
 A C# Test Framework combining
-* UAT - As A, I Want, So That
-* BDD - Given, When, Then
-* DDD - Entities and Personas
+* As A, I Want, So That (User Stories)
+* Given, When, Then (BDD)
+* Entities and Personas (DDD)
 
 Benefits
 * Concise - combines test method naming with User Story and BDD syntaxes
 * Guiding - consume first testing with strict structure helps discover the domain entities and commands
 * Readable - single appropriately named methods result in simple to read tests and output
-* Reusable - calls to delegate methods aid reusability
-* Agnostic - specify architecture layer to target test i.e. Presentation, Web API.
+* Reusable - target application layers or even platform implementations, plus includes calls to delegate methods
 
 Example console output
 ```C#
