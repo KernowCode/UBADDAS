@@ -14,7 +14,7 @@ Benefits
 * Concise - combines test method naming with User Story and BDD syntaxes
 * Guiding - following test driven development with strict structure helps discover the domain entities and commands
 * Readable - single appropriately named methods result in simple to read tests and output
-* Reusable - target application layers or even platform implementations, plus includes calls to delegate methods
+* Reusable - target testing against different application layers or even platform implementations
 
 Example console output
 ```C#
