@@ -30,7 +30,7 @@ Usage - Test Code
 namespace TestProject
 {
   [TestClass]
-  public class Test1 : TestFeatureBase
+  public class MyTest : TestFeatureBase
   {
     public override ApplicationLayer()
     {
