@@ -12,7 +12,7 @@ A C# Test Framework combining
 
 Benefits
 * Concise - combines test method naming with User Story and BDD syntaxes
-* Guiding - consume first testing with strict structure helps discover the domain entities and commands
+* Guiding - following test driven development with strict structure helps discover the domain entities and commands
 * Readable - single appropriately named methods result in simple to read tests and output
 * Reusable - target application layers or even platform implementations, plus includes calls to delegate methods
 
