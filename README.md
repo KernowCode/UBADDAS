@@ -32,7 +32,7 @@ namespace TestProject
   [TestClass]
   public class MyTest : StoryFeatureBase<MyBusinessValue>
   {
-    public override ApplicationLayer()
+    public override string ApplicationLayer()
     {
       return "PresentationLayer"; //could be other i.e. WebApi, possibly provided by App.Config
     }
