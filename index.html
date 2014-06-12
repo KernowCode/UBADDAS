@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="UBADDAS : User Behavior and Domain Driven Acceptance Stories" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>UBADDAS</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/KernowCode/UBADDAS">View on GitHub</a>
+
+          <h1 id="project_title">UBADDAS</h1>
+          <h2 id="project_tagline">User Behavior and Domain Driven Acceptance Stories</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/KernowCode/UBADDAS/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/KernowCode/UBADDAS/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p><em>This test framework concisely and coherently brings together the concepts of User Stories, Behaviour Driven Development, and Domain Driven Design. It simply provides a means to author test steps as Personas for each Entity Command. It executes these methods targeting the application layer of choice, resulting in succinct output of test results to the console.  The results are abstract and reusable behaviours that do not need to be rewritten to support other application layers and even different platform implementations.</em></p>
+
+<p>A C# Test Framework combining</p>
+
+<ul>
+<li>As A, I Want, So That (User Stories)</li>
+<li>Given, When, Then (BDD)</li>
+<li>Entities and Personas (DDD)</li>
+</ul><p>Benefits</p>
+
+<ul>
+<li>Concise - combines test method naming with User Story and BDD syntaxes</li>
+<li>Guiding - following test driven development with strict structure helps discover the domain entities and commands</li>
+<li>Readable - single appropriately named methods result in simple to read tests and output</li>
+<li>Reusable - target testing against different application layers or even platform implementations</li>
+</ul><p>Example console output</p>
+
+<div class="highlight highlight-C#"><pre><span class="n">I</span> <span class="n">want</span> <span class="n">to</span> <span class="n">register</span> <span class="n">a</span> <span class="k">new</span> <span class="n">user</span>
+  <span class="n">So</span> <span class="n">that</span> <span class="n">Increase</span> <span class="n">customer</span> <span class="k">base</span>
+       <span class="n">As</span> <span class="n">user</span>
+    <span class="n">Given</span> <span class="n">Register</span> <span class="n">customer</span>
+     <span class="n">When</span> <span class="n">Confirm</span> <span class="n">customer</span> <span class="n">registration</span>
+     <span class="n">Then</span> <span class="n">Login</span> <span class="n">customer</span>
+</pre></div>
+
+<p>Usage - Test Code</p>
+
+<div class="highlight highlight-C#"><pre><span class="k">namespace</span> <span class="nn">TestProject</span>
+<span class="p">{</span>
+<span class="na">  [TestClass]</span>
+  <span class="k">public</span> <span class="k">class</span> <span class="nc">MyTest</span> <span class="p">:</span> <span class="n">StoryFeatureBase</span><span class="p">&lt;</span><span class="n">MyBusinessValue</span><span class="p">&gt;</span>
+  <span class="p">{</span>
+    <span class="k">public</span> <span class="k">override</span> <span class="kt">string</span> <span class="nf">ApplicationLayer</span><span class="p">()</span>
+    <span class="p">{</span>
+      <span class="k">return</span> <span class="s">"PresentationLayer"</span><span class="p">;</span> <span class="c1">//could be other i.e. WebApi, possibly provided by App.Config</span>
+    <span class="p">}</span>
+
+<span class="na">    [Test]</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">IWantToRegisterANewUser</span><span class="p">()</span>
+    <span class="p">{</span>
+      <span class="kt">var</span> <span class="n">user</span> <span class="p">=</span> <span class="k">new</span> <span class="n">User</span><span class="p">();</span>
+      <span class="n">ICustomer</span> <span class="n">customer</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Customer</span><span class="p">();</span>
+      <span class="n">SoThat</span><span class="p">(</span><span class="n">MyBusinessValue</span><span class="p">.</span><span class="n">IncreaseCustomerBase</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">As</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">Given</span><span class="p">(</span><span class="n">customer</span><span class="p">.</span><span class="n">Register</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">When</span><span class="p">(</span><span class="n">customer</span><span class="p">.</span><span class="n">Confirm_Registration</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">Then</span><span class="p">(</span><span class="n">customer</span><span class="p">.</span><span class="n">Login</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">enum</span> <span class="n">MyBusinessValue</span>
+    <span class="p">{</span>
+      <span class="n">IncreaseCustomerBase</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">namespace</span> <span class="nn">TestProject.Personas</span>
+<span class="p">{</span>
+  <span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">User</span> <span class="p">:</span> <span class="n">IPersona</span>
+  <span class="p">{</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">namespace</span> <span class="nn">TestProject.Personas.PresentationLayer</span>
+<span class="p">{</span>
+  <span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">User</span> <span class="p">:</span> <span class="n">ICustomer</span>
+  <span class="p">{</span>
+    <span class="k">public</span> <span class="n">Customer</span> <span class="n">Customer</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span> <span class="c1">//injected by framework</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">Register</span><span class="p">()</span>
+    <span class="p">{</span>
+      <span class="c1">// your test code here. i.e. selenium</span>
+      <span class="kt">var</span> <span class="n">email</span> <span class="p">=</span> <span class="n">Customer</span><span class="p">.</span><span class="n">Email</span><span class="p">;</span> <span class="c1">//i.e. For registering with app</span>
+    <span class="p">}</span>
+    <span class="c1">// other interface implementations</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">namespace</span> <span class="nn">TestProject.Personas.WebApi</span>
+<span class="p">{</span>
+  <span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">User</span> <span class="p">:</span> <span class="n">ICustomer</span>
+  <span class="p">{</span>
+    <span class="k">public</span> <span class="n">Customer</span> <span class="n">Customer</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span> <span class="c1">//injected by framework</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">Register</span><span class="p">()</span>
+    <span class="p">{</span>
+      <span class="c1">// your test code here. i.e. rest api calls</span>
+    <span class="p">}</span>
+    <span class="c1">// other interface implementations</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Usage - Production Code</p>
+
+<div class="highlight highlight-C#"><pre><span class="k">public</span> <span class="k">interface</span> <span class="n">ICustomer</span> <span class="p">{</span>
+  <span class="k">void</span> <span class="nf">Register</span><span class="p">()</span>
+  <span class="k">void</span> <span class="nf">Confirm_Registration</span><span class="p">();</span>
+  <span class="k">void</span> <span class="nf">Login</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Customer</span> <span class="p">:</span> <span class="n">ICustomer</span> <span class="p">{</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">Register</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// your application domain logic</span>
+  <span class="p">}</span>
+  <span class="c1">// other interface implementations</span>
+<span class="p">}</span>
+
+
+</pre></div>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">UBADDAS maintained by <a href="https://github.com/KernowCode">KernowCode</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
