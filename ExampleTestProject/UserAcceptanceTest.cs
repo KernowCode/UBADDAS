@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using KernowCode.KTest.Ubaddas.Example;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using KernowCode.KTest.Ubaddas;
 using MyApplication.Domain.Entities;
@@ -7,7 +8,7 @@ using TestProject.Personas;
 namespace TestProject
 {
     [TestClass]
-    public class Test1 : TestFeatureBase
+    public class Test1 : ExampleTestFeatureBase
     {
         [TestMethod]
         public void IWantToRegisterANewUserA()
@@ -16,7 +17,7 @@ namespace TestProject
             ICustomer customer = new Customer("myTestEmail@mail.com");
 
             SoThat(MyBusinessValue.WeIncreaseTheCustomerBase)
-                .As(new User())
+                .As(new WebUser())
                 .Given(customer.Register)
                 .When(customer.Confirm_Registration)
                 .Then(customer.Login);
@@ -26,7 +27,7 @@ namespace TestProject
         public void IWantToRegisterANewUserB()
         {
             //Demonstrates more descriptive naming of personas and entities            
-            var user = new User().Named("a web user"); //naming by hand
+            var user = new WebUser().Named("a web user"); //naming by hand
             ICustomer newCustomer = new Customer("myTestEmail@mail.com");
             newCustomer.Named(() => newCustomer); //naming from variable name
 
@@ -41,7 +42,7 @@ namespace TestProject
         public void IWantToRegisterANewUserC()
         {
             //Demonstrates inline naming and renaming through test
-            var user = new User();
+            var user = new WebUser();
             ICustomer newCustomer = new Customer("myTestEmail@mail.com");            
 
             SoThat(MyBusinessValue.WeIncreaseTheCustomerBase)
@@ -57,7 +58,7 @@ namespace TestProject
             ICustomer customer = new Customer("myTestEmail@mail.com");            
 
             SoThat(MyBusinessValue.WeIncreaseTheCustomerBase)
-                .As(new User())
+                .As(new WebUser())
                 .Given(x => FullyRegister(x, customer)) //delegate call to do a set of actions                
                 .When(customer.Confirm_Registration)                
                 .Then(customer.Login);

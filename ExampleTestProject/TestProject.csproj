@@ -50,10 +50,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="UbaddasExampleInOneFile.cs" />
     <Compile Include="Personas\Presentation\UserCustomer.cs" />
     <Compile Include="Personas\RestApi\UserCustomer.cs" />
     <Compile Include="Personas\User.cs" />
-    <Compile Include="TestFeatureBase.cs" />
+    <Compile Include="ExampleTestFeatureBase.cs" />
     <Compile Include="UserAcceptanceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

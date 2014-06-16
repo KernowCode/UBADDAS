@@ -5,13 +5,16 @@ using System.Reflection;
 
 namespace KernowCode.KTest.Ubaddas
 {
+    /// <summary>
+    /// Main UBADDAS behaviour logic, providing fluent interface
+    /// </summary>
     public class Behaviour : IBase, IGiven, IWhen, IThen, IState, ISet
     {
         internal const int LeftSectionPadding = 9;
 
         private static string _targetApplicationLayer;
 
-        public Behaviour()
+        private Behaviour()
         {
             Narrate = true;
         }
@@ -100,10 +103,20 @@ namespace KernowCode.KTest.Ubaddas
             }
             catch (Exception exception)
             {
-                throw new Exception(
-                    Environment.NewLine +
-                    string.Format("Make sure the '{0}' class has a parameterless constructor.", CurrentPersonaType.Name)
-                    + Environment.NewLine, exception);
+                try
+                {
+                    throw new Exception(
+                        Environment.NewLine +
+                        string.Format("Make sure the '{0}' class has a parameterless constructor.",
+                                      CurrentPersonaType.Name)
+                        + Environment.NewLine, exception);
+                }catch(Exception)
+                {
+                    throw new Exception(
+                        Environment.NewLine +
+                        "No Persona has been specified.  Use the 'As' statement to specify the Persona."
+                        + Environment.NewLine, exception);
+                }
             }            
             return asPersona;
         }
@@ -160,43 +173,93 @@ namespace KernowCode.KTest.Ubaddas
             }
         }
         
+        /// <summary>
+        /// <para>Specifies the start of the 'Given' section of BDD</para>
+        /// <para>This can be followed by 'And' and 'When'</para>
+        /// <para>It must be preceeded by 'As'</para>
+        /// <para>Example</para>
+        /// <para> .Given(customer.Login)</para>
+        /// </summary>
+        /// <param name="domainEntityCommand">The entitiy interface command method (without executing parenthesis)</param>
+        /// <returns>Interface providing fluent methods 'And' and 'When'</returns>
         public IGiven Given(Action domainEntityCommand)
         {
             DoBehaviour("given", domainEntityCommand);
             return this;
         }
-        
+
+        /// <summary>
+        /// <para>Specifies the start of the 'When' section of BDD</para>
+        /// <para>This can be followed by 'And' and 'Then'</para>
+        /// <para>Example</para>
+        /// <para> .When(customer.Login)</para>
+        /// </summary>
+        /// <param name="domainEntityCommand">The entitiy interface command method (without executing parenthesis)</param>
+        /// <returns>Interface providing fluent methods 'And' and 'Then'</returns>
         public IWhen When(Action domainEntityCommand)
         {
             DoBehaviour("when", domainEntityCommand);
             return this;
         }
-        
+
+        /// <summary>
+        /// <para>Specifies the start of the 'Then' section of BDD</para>
+        /// <para>This can be followed by 'And'</para>
+        /// <para>Example</para>
+        /// <para> .Then(customer.Logout)</para>
+        /// </summary>
+        /// <param name="domainEntityCommand">The entitiy interface command method (without executing parenthesis)</param>
+        /// <returns>Interface providing fluent method 'And'</returns>
         public IThen Then(Action domainEntityCommand)
         {
             DoBehaviour("then", domainEntityCommand);
             return this;
         }
 
+        /// <summary>
+        /// <para>Specifies the start of the 'Given' section of BDD</para>
+        /// <para>This can be followed by 'And' and 'When'</para>
+        /// <para>It must be preceeded by 'As'</para>
+        /// <para>Example</para>
+        /// <para> .Given(x => RegisterCustomer(x, customer))</para>
+        /// </summary>
+        /// <param name="actionDelegate">A delegate containing a call to a method that will execute another set of behaviours. Specify 'ISet behaviour' as the first parameter of your method and use behaviour to perform another Given,When,Then</param>
+        /// <returns>Interface providing fluent methods 'And' and 'When'</returns>
         public IGiven Given(Action<ISet> actionDelegate)
         {
             DoBehaviourSet("given", actionDelegate);
             return this;
         }
 
+        /// <summary>
+        /// <para>Specifies the start of the 'When' section of BDD</para>
+        /// <para>This can be followed by 'And' and 'Then'</para>
+        /// <para>Example</para>
+        /// <para> .When(x => CompleteCustomerRegistration(x, customer))</para>
+        /// </summary>
+        /// <param name="actionDelegate">A delegate containing a call to a method that will execute another set of behaviours. Specify 'ISet behaviour' as the first parameter of your method and use behaviour to perform another Given,When,Then</param>
+        /// <returns>Interface providing fluent methods 'And' and 'Then'</returns>
         public IWhen When(Action<ISet> actionDelegate)
         {
             DoBehaviourSet("when", actionDelegate);
             return this;
         }
-        
+
+        /// <summary>
+        /// <para>Specifies the start of the 'Then' section of BDD</para>
+        /// <para>This can be followed by 'And'</para>
+        /// <para>Example</para>
+        /// <para> .Then(x => CheckAllOrders(x, customer))</para>
+        /// </summary>
+        /// <param name="actionDelegate">A delegate containing a call to a method that will execute another set of behaviours. Specify 'ISet behaviour' as the first parameter of your method and use behaviour to perform another Given,When,Then</param>
+        /// <returns>Interface providing fluent method 'And'</returns>
         public IThen Then(Action<ISet> actionDelegate)
         {
             DoBehaviourSet("then", actionDelegate);
             return this;
         }
 
-        public static Behaviour SoThat(string businessValue, string targetApplicationLayer)
+        internal static Behaviour SoThat(string businessValue, string targetApplicationLayer)
         {
             _targetApplicationLayer = targetApplicationLayer;
             var testName = GetTestMethodName();
@@ -231,10 +294,23 @@ namespace KernowCode.KTest.Ubaddas
             return HelpCreateLine("IWantTo", reason);
         }
 
+        /// <summary>
+        /// Stop or start output of BDD statements
+        /// </summary>
         public bool Narrate { get; set; }
 
+        /// <summary>
+        /// Stores the IPersona type specified previously in the BDD statement via the 'As' statement
+        /// </summary>
         public Type CurrentPersonaType { get; set; }
 
+        /// <summary>
+        /// <para>Used when you create a method to perform an inner set of behaviours</para>
+        /// <para>Example</para>
+        /// <para> behaviour.Perform()</para>
+        /// <para>  .Given(...</para>
+        /// </summary>
+        /// <returns></returns>
         public IBase Perform()
         {
             var methodName = new StackTrace().GetFrame(1).GetMethod().Name.ExpandToReadable();

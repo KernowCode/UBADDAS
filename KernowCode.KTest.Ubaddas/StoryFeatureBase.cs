@@ -2,6 +2,12 @@
 
 namespace KernowCode.KTest.Ubaddas
 {
+    /// <summary>
+    /// <para>Enables a test class to use the UBADDAS test syntax</para>
+    /// <para>An Enum representing the User Stories business values must be supplied</para>
+    /// <para></para>
+    /// </summary>
+    /// <typeparam name="TBusinessValueEnum"></typeparam>
     public class StoryFeatureBase<TBusinessValueEnum>
     {
         /// <summary>

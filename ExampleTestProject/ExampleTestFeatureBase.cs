@@ -1,14 +1,14 @@
 ﻿using KernowCode.KTest.Ubaddas;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestProject
+namespace KernowCode.KTest.Ubaddas.Example
 {
     public enum MyBusinessValue
     {
         WeIncreaseTheCustomerBase
     }
 
-    public class TestFeatureBase : StoryFeatureBase<MyBusinessValue>
+    public class ExampleTestFeatureBase : StoryFeatureBase<MyBusinessValue>
     {
         protected override string ApplicationLayer()
         {                        

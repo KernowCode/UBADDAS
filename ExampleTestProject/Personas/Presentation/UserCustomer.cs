@@ -4,7 +4,7 @@ using MyApplication.Domain.Entities;
 
 namespace TestProject.Personas.Presentation
 {
-    public partial class User : ICustomer
+    public partial class WebUser : ICustomer
     {
         public Customer Customer { get; set; }
 
