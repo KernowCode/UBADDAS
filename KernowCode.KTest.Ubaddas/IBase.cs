@@ -21,7 +21,7 @@ namespace KernowCode.KTest.Ubaddas
         /// <summary>
         /// <para>Specifies the start of the 'Given' section of BDD</para>
         /// <para>This can be followed by 'And' and 'When'</para>
-        /// /// <para>Must be preceeded with the 'As' statement</para>
+        /// <para>Must be preceeded with the 'As' statement</para>
         /// <para>Example</para>
         /// <para> .Given(x => RegisterCustomer(x, customer))</para>
         /// </summary>
