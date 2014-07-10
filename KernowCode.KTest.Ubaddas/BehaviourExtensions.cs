@@ -43,7 +43,7 @@ namespace KernowCode.KTest.Ubaddas
         /// <param name="behaviour">Current behaviour instance (supplied automatically)</param>
         /// <param name="actionDelegate">A delegate containing a call to a method that will execute another set of behaviours. Specify 'ISet behaviour' as the first parameter of your method and use behaviour to perform another Given,When,Then</param>
         /// <returns>Current BDD Tense (Given, When, or Then)</returns>
-        public static T And<T>(this T behaviour, Action<ISet> actionDelegate) where T : ITense
+        public static T AndWe<T>(this T behaviour, Action<ISet> actionDelegate) where T : ITense
         {
             behaviour.GetType().GetMethod("DoBehaviourSet", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(
                 behaviour, new object[] { "and", actionDelegate });
