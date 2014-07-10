@@ -175,3 +175,4 @@ FakesAssemblies/
 
 # Resharper
 _resharper/
+*.nupkg
