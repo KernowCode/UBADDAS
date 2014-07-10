@@ -221,11 +221,11 @@ namespace KernowCode.KTest.Ubaddas
         /// <para>This can be followed by 'And' and 'When'</para>
         /// <para>It must be preceeded by 'As'</para>
         /// <para>Example</para>
-        /// <para> .Given(x => RegisterCustomer(x, customer))</para>
+        /// <para> .GivenWe(x => RegisterCustomer(x, customer))</para>
         /// </summary>
         /// <param name="actionDelegate">A delegate containing a call to a method that will execute another set of behaviours. Specify 'ISet behaviour' as the first parameter of your method and use behaviour to perform another Given,When,Then</param>
         /// <returns>Interface providing fluent methods 'And' and 'When'</returns>
-        public IGiven Given(Action<ISet> actionDelegate)
+        public IGiven GivenWe(Action<ISet> actionDelegate)
         {
             DoBehaviourSet("given", actionDelegate);
             return this;
@@ -235,11 +235,11 @@ namespace KernowCode.KTest.Ubaddas
         /// <para>Specifies the start of the 'When' section of BDD</para>
         /// <para>This can be followed by 'And' and 'Then'</para>
         /// <para>Example</para>
-        /// <para> .When(x => CompleteCustomerRegistration(x, customer))</para>
+        /// <para> .WhenWe(x => CompleteCustomerRegistration(x, customer))</para>
         /// </summary>
         /// <param name="actionDelegate">A delegate containing a call to a method that will execute another set of behaviours. Specify 'ISet behaviour' as the first parameter of your method and use behaviour to perform another Given,When,Then</param>
         /// <returns>Interface providing fluent methods 'And' and 'Then'</returns>
-        public IWhen When(Action<ISet> actionDelegate)
+        public IWhen WhenWe(Action<ISet> actionDelegate)
         {
             DoBehaviourSet("when", actionDelegate);
             return this;
@@ -249,11 +249,11 @@ namespace KernowCode.KTest.Ubaddas
         /// <para>Specifies the start of the 'Then' section of BDD</para>
         /// <para>This can be followed by 'And'</para>
         /// <para>Example</para>
-        /// <para> .Then(x => CheckAllOrders(x, customer))</para>
+        /// <para> .ThenWe(x => CheckAllOrders(x, customer))</para>
         /// </summary>
         /// <param name="actionDelegate">A delegate containing a call to a method that will execute another set of behaviours. Specify 'ISet behaviour' as the first parameter of your method and use behaviour to perform another Given,When,Then</param>
         /// <returns>Interface providing fluent method 'And'</returns>
-        public IThen Then(Action<ISet> actionDelegate)
+        public IThen ThenWe(Action<ISet> actionDelegate)
         {
             DoBehaviourSet("then", actionDelegate);
             return this;

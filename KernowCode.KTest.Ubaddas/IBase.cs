@@ -23,10 +23,10 @@ namespace KernowCode.KTest.Ubaddas
         /// <para>This can be followed by 'And' and 'When'</para>
         /// <para>Must be preceeded with the 'As' statement</para>
         /// <para>Example</para>
-        /// <para> .Given(x => RegisterCustomer(x, customer))</para>
+        /// <para> .GivenWe(x => RegisterCustomer(x, customer))</para>
         /// </summary>
         /// <param name="actionDelegate">A delegate containing a call to a method that will execute another set of behaviours. Specify 'ISet behaviour' as the first parameter of your method and use behaviour to perform another Given,When,Then</param>
         /// <returns>Interface providing fluent methods 'And' and 'When'</returns>
-        IGiven Given(Action<ISet> actionDelegate);
+        IGiven GivenWe(Action<ISet> actionDelegate);
     }
 }

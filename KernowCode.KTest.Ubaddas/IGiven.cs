@@ -21,11 +21,11 @@ namespace KernowCode.KTest.Ubaddas
         /// <para>Specifies the start of the 'When' section of BDD</para>
         /// <para>This can be followed by 'And' and 'Then'</para>
         /// <para>Example</para>
-        /// <para> .When(x => CompleteCustomerRegistration(x, customer))</para>
+        /// <para> .WhenWe(x => CompleteCustomerRegistration(x, customer))</para>
         /// <para> </para>
         /// </summary>
         /// <param name="actionDelegate">A delegate containing a call to a method that will execute another set of behaviours. Specify 'ISet behaviour' as the first parameter of your method and use behaviour to perform another Given,When,Then</param>
         /// <returns>Interface providing fluent methods 'And' and 'Then'</returns>
-        IWhen When(Action<ISet> actionDelegate);
+        IWhen WhenWe(Action<ISet> actionDelegate);
     }
 }

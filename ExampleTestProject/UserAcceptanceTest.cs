@@ -59,7 +59,7 @@ namespace TestProject
 
             SoThat(MyBusinessValue.WeIncreaseTheCustomerBase)
                 .As(new WebUser())
-                .Given(x => FullyRegister(x, customer)) //delegate call to do a set of actions                
+                .GivenWe(x => FullyRegister(x, customer)) //delegate call to do a set of actions                
                 .When(customer.Confirm_Registration)                
                 .Then(customer.Login);
         }
