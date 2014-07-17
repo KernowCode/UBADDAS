@@ -83,7 +83,7 @@ namespace KernowCode.KTest.Ubaddas.Example
 
         namespace RestApi //another layer implementation
         {
-            //You could make Rest call for instance to command the presentation layer
+            //You could make Rest call for instance to command the Api layer
             public class User : ICustomer
             {
                 public Customer Customer { get; set; }
