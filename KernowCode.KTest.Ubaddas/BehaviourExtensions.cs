@@ -46,7 +46,7 @@ namespace KernowCode.KTest.Ubaddas
         public static T AndWe<T>(this T behaviour, Action<ISet> actionDelegate) where T : ITense
         {
             behaviour.GetType().GetMethod("DoBehaviourSet", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(
-                behaviour, new object[] { "and", actionDelegate });
+                behaviour, new object[] { "and we", actionDelegate });
             return behaviour;
         }     
     }
