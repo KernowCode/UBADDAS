@@ -13,10 +13,11 @@ namespace KernowCode.KTest.Ubaddas
         /// <para>Must be preceeded with the 'As' statement</para>
         /// <para>Example</para>
         /// <para> .Given(customer.Login)</para>
+        /// <para> .Given() //nothing</para>
         /// </summary>
         /// <param name="domainEntityCommand">The entitiy interface command method (without executing parenthesis)</param>
         /// <returns>Interface providing fluent methods 'And' and 'When'</returns>
-        IGiven Given(Action domainEntityCommand);
+        IGiven Given(Action domainEntityCommand = null);
        
         /// <summary>
         /// <para>Specifies the start of the 'Given' section of BDD</para>
