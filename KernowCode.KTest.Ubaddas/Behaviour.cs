@@ -53,8 +53,8 @@ namespace KernowCode.KTest.Ubaddas
         private void DoBehaviourSet(string behaviour, Action<ISet> actionDelegate)
         {
             Narrate = false;
-            var rememberedPersona = CurrentPersonaType;                   
-            Console.Write(behaviour.PadLeft(LeftSectionPadding).ExpandToReadable() + " ");
+            var rememberedPersona = CurrentPersonaType;
+            Console.Write(HelpCreateLine(behaviour, " "));
             actionDelegate(this);
             CurrentPersonaType = rememberedPersona;
             Narrate = true;
@@ -62,37 +62,44 @@ namespace KernowCode.KTest.Ubaddas
 
         private void DoBehaviour(string behaviour, Action domainEntityCommand)
         {
-            if (Narrate)
+            if (domainEntityCommand != null)
             {
-                var line = "";
-                if (domainEntityCommand.Method.Name.Contains("_"))
-                    line = domainEntityCommand.Method.Name.Replace("_", " " + domainEntityCommand.Target.Name()).ExpandToReadable();
-                else
-                    line = string.Format("{0} {1}", domainEntityCommand.Method.Name, domainEntityCommand.Target.Name()).ExpandToReadable();
-                Console.WriteLine(HelpCreateLine(behaviour, line));
-            }
-            var implementedDomain = CreatePersonaImplementation();
-            SetDomainOnPersonaImplementation(domainEntityCommand, implementedDomain);
-            var method = GetPersonaImplementedMethod(domainEntityCommand);
-            try
-            {
-                method.Invoke(implementedDomain, null);
-            }
-            catch (Exception exception)
-            {
-                if (exception.InnerException is NotImplementedException)
+                if (Narrate)
                 {
-                    throw new NotImplementedException(
-                        string.Format(
-                            Environment.NewLine
-                            + "Pending implementation I{0}.{1} in the {2} class.",
-                            domainEntityCommand.Target.GetType().Name,
-                            domainEntityCommand.Method.Name, implementedDomain.GetType().FullName) +
-                        Environment.NewLine, exception);
+                    var line = "";
+                    if (domainEntityCommand.Method.Name.Contains("_"))
+                        line =
+                            domainEntityCommand.Method.Name.Replace("_", " " + domainEntityCommand.Target.Name()).
+                                ExpandToReadable();
+                    else
+                        line =
+                            string.Format("{0} {1}", domainEntityCommand.Method.Name, domainEntityCommand.Target.Name())
+                                .ExpandToReadable();
+                    Console.WriteLine(HelpCreateLine(behaviour, line));
                 }
-                throw;
+                var implementedDomain = CreatePersonaImplementation();
+                SetDomainOnPersonaImplementation(domainEntityCommand, implementedDomain);
+                var method = GetPersonaImplementedMethod(domainEntityCommand);
+                try
+                {
+                    method.Invoke(implementedDomain, null);
+                }
+                catch (Exception exception)
+                {
+                    if (exception.InnerException is NotImplementedException)
+                    {
+                        throw new NotImplementedException(
+                            string.Format(
+                                Environment.NewLine
+                                + "Pending implementation I{0}.{1} in the {2} class.",
+                                domainEntityCommand.Target.GetType().Name,
+                                domainEntityCommand.Method.Name, implementedDomain.GetType().FullName) +
+                            Environment.NewLine, exception);
+                    }
+                    throw;
+                }
             }
-        }        
+        }
 
         private object CreatePersonaImplementation()
         {
@@ -126,6 +133,8 @@ namespace KernowCode.KTest.Ubaddas
             try
             {
                 var entityProperty = persona.GetType().GetProperty(domainEntityCommand.Target.GetType().Name);
+                if (entityProperty == null)
+                    throw new Exception(string.Format("Could not get property named '{0}'", domainEntityCommand.Target.GetType().Name));
                 entityProperty.SetValue(persona, domainEntityCommand.Target);
             }
             catch (Exception exception)
@@ -179,10 +188,11 @@ namespace KernowCode.KTest.Ubaddas
         /// <para>It must be preceeded by 'As'</para>
         /// <para>Example</para>
         /// <para> .Given(customer.Login)</para>
+        /// <para> .Given() //nothing</para>
         /// </summary>
         /// <param name="domainEntityCommand">The entitiy interface command method (without executing parenthesis)</param>
         /// <returns>Interface providing fluent methods 'And' and 'When'</returns>
-        public IGiven Given(Action domainEntityCommand)
+        public IGiven Given(Action domainEntityCommand = null)
         {
             DoBehaviour("given", domainEntityCommand);
             return this;
@@ -227,7 +237,7 @@ namespace KernowCode.KTest.Ubaddas
         /// <returns>Interface providing fluent methods 'And' and 'When'</returns>
         public IGiven GivenWe(Action<ISet> actionDelegate)
         {
-            DoBehaviourSet("given", actionDelegate);
+            DoBehaviourSet("given we", actionDelegate);
             return this;
         }
 
@@ -241,7 +251,7 @@ namespace KernowCode.KTest.Ubaddas
         /// <returns>Interface providing fluent methods 'And' and 'Then'</returns>
         public IWhen WhenWe(Action<ISet> actionDelegate)
         {
-            DoBehaviourSet("when", actionDelegate);
+            DoBehaviourSet("when we", actionDelegate);
             return this;
         }
 
@@ -255,11 +265,11 @@ namespace KernowCode.KTest.Ubaddas
         /// <returns>Interface providing fluent method 'And'</returns>
         public IThen ThenWe(Action<ISet> actionDelegate)
         {
-            DoBehaviourSet("then", actionDelegate);
+            DoBehaviourSet("then we", actionDelegate);
             return this;
         }
 
-        internal static Behaviour SoThat(string businessValue, string targetApplicationLayer)
+        public static Behaviour SoThat(string businessValue, string targetApplicationLayer)
         {
             _targetApplicationLayer = targetApplicationLayer;
             var testName = GetTestMethodName();
