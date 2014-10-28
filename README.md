@@ -13,7 +13,7 @@ A C# Test Framework combining
 * Entities and Personas (DDD)
 
 Benefits
-* Concise - combines test method naming with User Story and BDD syntaxes
+* Concise - combines test method naming with User Story and BDD syntaxes 
 * Guiding - following test driven development with strict structure helps discover the domain entities and commands
 * Coupled - but in a good way that restricts over specification
 * Readable - single appropriately named methods result in simple to read tests and output
