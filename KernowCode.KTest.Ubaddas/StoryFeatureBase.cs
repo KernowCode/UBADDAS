@@ -1,4 +1,8 @@
-﻿using System;
+﻿using KernowCode.KTest.Logging;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.IO;
 
 namespace KernowCode.KTest.Ubaddas
 {
@@ -30,7 +34,41 @@ namespace KernowCode.KTest.Ubaddas
         /// <returns>Fluent interface providing BDD Given, When, Then syntax</returns>
         protected IBase SoThat(TBusinessValueEnum businessValue)
         {
-            return Behaviour.SoThat(businessValue.ToString(), ApplicationLayer());
+            var loggerFactory = LoggerFactory ?? ConfigureDefaultLoggersFactory;
+            var loggers = new Loggers(loggerFactory());
+            loggers.SetStartTextsToEmphasise("I want", "So that", "As", "Given", "When", "Then", "And");
+            return Behaviour.SoThat(businessValue.ToString(), ApplicationLayer(), loggers);
         }
+
+        private List<ILogger> ConfigureDefaultLoggersFactory()
+        {
+            var loggers = new List<ILogger>();
+            loggers.Add(new ConsoleLogger(Behaviour.LeftSectionPadding));            
+            return loggers;
+        }
+
+        /// <summary>
+        /// <para>Create a new test output file path based on test method name located at executing assembly TestOutput folder</para>
+        /// <para>i.e. .../bin/Debug/kTestOutput/MyTest.html</para>
+        /// </summary>
+        /// <param name="extension">file extension to append to filename</param>
+        /// <returns>filepath</returns>
+        public static string GetTestOutputFilePath(string extension)
+        {
+            string timeStamp = DateTime.UtcNow.ToString("yyyyMMddHHmmssffff");
+            return Behaviour.GetTestFilename(@"{1}\kTestOutput\{0}.{2}.{3}", GetSourceDirectory(), timeStamp, extension);
+        }
+
+        private static string GetSourceDirectory()
+        {
+            var uri = new UriBuilder(Assembly.GetExecutingAssembly().CodeBase);
+            var path = Uri.UnescapeDataString(uri.Path);
+            return Path.GetDirectoryName(path);
+        }
+
+        /// <summary>
+        /// Allows you to specify the test output loggers
+        /// </summary>
+        protected Func<List<ILogger>> LoggerFactory { get; set; }
     }
 }

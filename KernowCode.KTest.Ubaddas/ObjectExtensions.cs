@@ -23,7 +23,7 @@ namespace KernowCode.KTest.Ubaddas
         /// <param name="expressionContainingOnlyYourInstance">i.e. () => myVariableToBeNamed</param>
         public static void Named<T>(this T instance, Expression<Func<T>> expressionContainingOnlyYourInstance)
         {
-            var name = ((MemberExpression) expressionContainingOnlyYourInstance.Body).Member.Name.ExpandToReadable();
+            var name = ((MemberExpression) expressionContainingOnlyYourInstance.Body).Member.Name;
             instance.Named(name);
         }
 
@@ -51,29 +51,6 @@ namespace KernowCode.KTest.Ubaddas
         {
             if (NamedInstances.ContainsKey(instance)) return NamedInstances[instance];
             return instance.GetType().Name;
-        }
-
-        /// <summary>
-        /// <para>Turns text in to readable text</para>
-        /// <para>i.e. 'myMethodName' becomes 'my method name'</para>
-        /// </summary>
-        /// <param name="text">string to expand. i.e. 'myMethodName'</param>
-        /// <returns>expanded string. i.e. 'my method name'</returns>
-        public static string ExpandToReadable(this string text)
-        {
-            const string regularExpressionToMatchUppercaseFollowingUpperOrLowercaseCharacter = @"(?<=[\p{Ll}]|[\p{Lu}])([\p{Lu}])";
-            text = Regex.Replace(text, regularExpressionToMatchUppercaseFollowingUpperOrLowercaseCharacter, x => " " + x.ToString().ToLower());
-
-            const string regularExpressionToMatchLettersFollowingNumbers = @"(?<=[0-9])([\p{L}])";
-            text = Regex.Replace(text, regularExpressionToMatchLettersFollowingNumbers, x => " " + x.ToString().ToLower());
-
-            const string regularExpressionToMatchNumbersFollowingLetters = @"(?<=[\p{L}])([0-9])";
-            text = Regex.Replace(text, regularExpressionToMatchNumbersFollowingLetters, x => " " + x.ToString().ToLower());
-
-            const string regularExpressionToMatchWhiteSpace = @"[ ]{2,}";
-            text = Regex.Replace(text, regularExpressionToMatchWhiteSpace, x => " ");
-
-            return text;
         }
     }
 }

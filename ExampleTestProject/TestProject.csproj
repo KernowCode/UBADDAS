@@ -50,7 +50,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="UbaddasExampleInOneFile.cs" />
+    <Compile Include="UbaddasExampleInOneFileV1.1.1.cs" />
     <Compile Include="Personas\Presentation\UserCustomer.cs" />
     <Compile Include="Personas\RestApi\UserCustomer.cs" />
     <Compile Include="Personas\User.cs" />
@@ -63,6 +63,10 @@
     <ProjectReference Include="..\ExampleProductionCode\MyApplication.csproj">
       <Project>{2D1C5295-8C9C-45A6-803B-2695554384CF}</Project>
       <Name>MyApplication</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KernowCode.KTest.Logging\KernowCode.KTest.Logging.csproj">
+      <Project>{8570dde2-03f9-4d90-881a-3387f49c7a75}</Project>
+      <Name>KernowCode.KTest.Logging</Name>
     </ProjectReference>
     <ProjectReference Include="..\KernowCode.KTest.Ubaddas\KernowCode.KTest.Ubaddas.csproj">
       <Project>{6B94F83C-560B-4CF5-9174-4EFD28DE0446}</Project>
