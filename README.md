@@ -107,5 +107,41 @@ public class Customer : ICustomer {
   }
   // other interface implementations
 }
+```
 
+**V1.1.1 - Improved logging indentation and added HTML logging output**
 
+*You can implement your own loggers based on ILogger and configure them for tests.  You can now write log events from within your code blocks*
+
+Test Fixture Setup
+```C#
+[TestInitialize]
+public void TestSetup()
+{
+  base.LoggerFactory = MyCustomLoggerFactory;
+}
+
+private List<ILogger> MyCustomLoggerFactory()
+{
+  var loggers = new List<ILogger>();            
+  loggers.Add(new ConsoleLogger(Behaviour.LeftSectionPadding));
+  loggers.Add(new HtmlLogger(GetTestOutputFilePath("html")));                        
+  return loggers;
+}
+```
+
+Using Logging
+```C#
+public class User : ICustomer
+{
+  public ILogger Log { get; set; } //Add this line to use Log later in you test implementation
+  public Customer Customer { get; set; }
+
+  public void Register()
+  {
+    Log.WriteLine("Presentation layer test implementation - register user");
+  }
+}
+```
+
+The output will detail the story {I want, so that, as a}, behaviour {given, when, then}, and the detail from your Log uses
