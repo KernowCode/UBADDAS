@@ -20,15 +20,17 @@ namespace KernowCode.KTest.Ubaddas
 
         private readonly Loggers _loggers;
         private readonly string _targetApplicationLayer;
+        private readonly Action _preStepAction;
+        private readonly object _appRunner;
 
-        private Behaviour(string targetApplicationLayer, Loggers loggers, string testName, string businessValue)
+        private Behaviour(string targetApplicationLayer, object appRunner, Loggers loggers, string testName, string businessValue, Action preStepAction = null)
         {
+            _appRunner = appRunner;
             _loggers = loggers;
+            _preStepAction = preStepAction;
             _targetApplicationLayer = targetApplicationLayer;
-            Log(() => _loggers.WriteLine("{0}", new[] {testName}));
+            Log(() => _loggers.WriteLine("{0}", new[] { testName }));
             Log(() => _loggers.WriteLine("so that" + Loggers.MidAlignSeparator + businessValue.ExpandToReadable().DecapitaliseInitial()));
-            _loggers.StepsStart();
-
         }
 
         #region IBase Members
@@ -41,6 +43,7 @@ namespace KernowCode.KTest.Ubaddas
         /// <para> .Given(customer.Login)</para>
         /// <para> .Given() //nothing</para>
         /// </summary>
+        /// <param name="confirmDestinationEmail"> </param>
         /// <param name="domainEntityCommand">The entitiy interface command method (without executing parenthesis)</param>
         /// <returns>Interface providing fluent methods 'And' and 'When'</returns>
         public IGiven Given(Action domainEntityCommand = null)
@@ -202,65 +205,82 @@ namespace KernowCode.KTest.Ubaddas
         private void DoBehaviourSet(string behaviour, Action<ISet> actionDelegate)
         {
             Log(() =>
-                {
-                    _loggers.Write(behaviour + Loggers.MidAlignSeparator);
-                    Type rememberedPersona = CurrentPersonaType;
-                    actionDelegate(this);
-                    CurrentPersonaType = rememberedPersona;
-                });
+            {
+                _loggers.Write(behaviour + Loggers.MidAlignSeparator);
+                Type rememberedPersona = CurrentPersonaType;
+                actionDelegate(this);
+                CurrentPersonaType = rememberedPersona;
+            });
         }
 
         private void DoBehaviour(string behaviour, Action domainEntityCommand)
         {
             Log(() =>
-                {
-                    if (domainEntityCommand != null)
-                    {
-                        string line = "";
-                        if (domainEntityCommand.Method.Name.Contains("_"))
-                            line =
-                                domainEntityCommand.Method.Name.Replace("_", " " + domainEntityCommand.Target.Name()).
-                                    ExpandToReadable();
-                        else
-                            line =
-                                string.Format("{0} {1}", domainEntityCommand.Method.Name,
-                                              domainEntityCommand.Target.Name())
-                                    .ExpandToReadable();
-                        line = line.DecapitaliseInitial(); 
+            {
 
-                        _loggers.WriteLine(behaviour + Loggers.MidAlignSeparator + line);
-                        object implementedDomain = CreatePersonaImplementation();
-                        SetLoggerOnPersonaImplementation(implementedDomain);
-                        SetDomainOnPersonaImplementation(domainEntityCommand, implementedDomain);
-                        MethodInfo method = GetPersonaImplementedMethod(domainEntityCommand);
-                        try
-                        {
-                            _loggers.StepsStart();
-                            method.Invoke(implementedDomain, null);
-                            _loggers.StepsStop();
-                        }
-                        catch (Exception exception)
-                        {
-                            if (exception.InnerException is NotImplementedException)
-                            {
-                                throw new NotImplementedException(
-                                    string.Format(
-                                        Environment.NewLine
-                                        + "Pending implementation I{0}.{1} in the {2} class.",
-                                        domainEntityCommand.Target.GetType().Name,
-                                        domainEntityCommand.Method.Name, implementedDomain.GetType().FullName) +
-                                    Environment.NewLine, exception);
-                            }
-                            throw;
-                        }
-                    }
+                if (domainEntityCommand != null)
+                {
+                    string line = "";
+                    var verbSentence = "";
+                    if (domainEntityCommand.Target is IUseVerbs)
+                        verbSentence = Default.Get(() => ((IUseVerbs)domainEntityCommand.Target).Verb.Sentence, "");                        
+                    if (domainEntityCommand.Method.Name.Contains("_"))
+                        line = domainEntityCommand.Method.Name.Replace("_", domainEntityCommand.Target.Name()).
+                                ExpandToReadable();
+                    else if (!string.IsNullOrWhiteSpace(verbSentence))
+                        line = verbSentence.Replace("[subject]", domainEntityCommand.Target.Name())
+                            .Replace("[object]", domainEntityCommand.Method.Name).ExpandToReadable();
                     else
+                        line = (domainEntityCommand.Target.Name() + domainEntityCommand.Method.Name)
+                            .ExpandToReadable();
+                    line = line.DecapitaliseInitial();
+
+                    _loggers.WriteLine(behaviour + Loggers.MidAlignSeparator + line);
+                    object implementedDomain = CreatePersonaImplementation();                    
+                    SetLoggerOnPersonaImplementation(implementedDomain, _loggers);
+                    SetVerbOnPersonaImplementation(implementedDomain, Default.Get(() => ((IUseVerbs)domainEntityCommand.Target).Verb));
+                    SetAppRunnerOnPersonaImplementation(implementedDomain, _appRunner);
+                    SetDomainOnPersonaImplementation(domainEntityCommand, implementedDomain);
+                    MethodInfo method = GetPersonaImplementedMethod(domainEntityCommand);
+                    try
                     {
+                        Do(_preStepAction);
                         _loggers.StepsStart();
-                        _loggers.WriteLine("(no action taken)");
+                        method.Invoke(implementedDomain, null);
                         _loggers.StepsStop();
                     }
-                });
+                    catch (Exception exception)
+                    {
+                        if (exception.InnerException is NotImplementedException)
+                        {
+                            throw new NotImplementedException(
+                                string.Format(
+                                    Environment.NewLine
+                                    + "Pending implementation I{0}.{1} in the {2} class.",
+                                    domainEntityCommand.Target.GetType().Name,
+                                    domainEntityCommand.Method.Name, implementedDomain.GetType().FullName) +
+                                Environment.NewLine, exception);
+                        }
+                        throw;
+                    }
+                    finally
+                    {
+                        if (domainEntityCommand.Target is IUseVerbs)
+                            ((IUseVerbs)domainEntityCommand.Target).Verb = null;
+                    }
+                }
+                else
+                {
+                    _loggers.StepsStart();
+                    _loggers.WriteLine("(no action taken)");
+                    _loggers.StepsStop();
+                }
+            });
+        }
+
+        private void Do(Action action)
+        {
+            if (action != null) action();
         }
 
         private object CreatePersonaImplementation()
@@ -293,35 +313,78 @@ namespace KernowCode.KTest.Ubaddas
 
         private void SetDomainOnPersonaImplementation(Action domainEntityCommand, object persona)
         {
+            var propertyType = domainEntityCommand.Target.GetType().Name;
+            var propertyName = propertyType + "Entity";
             try
             {
-                PropertyInfo entityProperty = persona.GetType().GetProperty(domainEntityCommand.Target.GetType().Name);
+                PropertyInfo entityProperty = persona.GetType().GetProperty(propertyName);
                 if (entityProperty == null)
-                    throw new Exception(string.Format("Could not get property named '{0}'",
-                                                      domainEntityCommand.Target.GetType().Name));
+                    throw new Exception(string.Format("Could not get property named '{0}'", propertyName));
                 entityProperty.SetValue(persona, domainEntityCommand.Target);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 throw new Exception(
                     Environment.NewLine
                     + string.Format("Could not set the '{0}' entity for the '{1}' persona implementation.",
-                                    domainEntityCommand.Target.GetType().Name, persona.GetType().Name)
+                                    propertyType, persona.GetType().Name)
                     + Environment.NewLine
                     + string.Format(
-                        "Check you have a public property 'public {0} {0} {{ get; set; }}' in the '{1}' class.",
-                        domainEntityCommand.Target.GetType().Name, persona.GetType().Name)
-                    + Environment.NewLine, exception);
+                        "Check you have a public property 'public {0} {1} {{ get; set; }}' in the '{2}' class.",
+                        propertyType, propertyName, persona.GetType().Name)
+                    + Environment.NewLine);
             }
         }
 
-        private void SetLoggerOnPersonaImplementation(object persona)
+        private void SetAppRunnerOnPersonaImplementation(object persona, object appRunner)
+        {
+            if (_appRunner != null)
+            {
+                var propertyName = "I";
+                var propertyType = appRunner.GetType().Name;
+                try
+                {
+                    PropertyInfo entityProperty = persona.GetType().GetProperty(propertyName);
+                    if (entityProperty == null)
+                        throw new Exception(string.Format("Could not get property named '{0}'", propertyName));
+                    entityProperty.SetValue(persona, appRunner);
+                }
+                catch (Exception)
+                {
+                    throw new Exception(
+                        Environment.NewLine
+                        + string.Format("Could not set the '{0}' entity for the '{1}' persona implementation.",
+                                        propertyType, persona.GetType().Name)
+                        + Environment.NewLine
+                        + string.Format(
+                            "Check you have a public property 'public {0} {1} {{ get; set; }}' in the '{2}' class.",
+                            propertyType, propertyName, persona.GetType().Name)
+                        + Environment.NewLine);
+                }
+            }
+        }
+
+        private void SetLoggerOnPersonaImplementation(object persona, Loggers loggers)
         {
             try
             {
                 PropertyInfo entityProperty =
-                    persona.GetType().GetProperties().FirstOrDefault(x => x.PropertyType == typeof (ILogger));
-                entityProperty.SetValue(persona, _loggers);
+                    persona.GetType().GetProperties().FirstOrDefault(x => x.PropertyType == typeof(ILogger));
+                entityProperty.SetValue(persona, loggers);
+            }
+            catch
+            {
+                //ignore
+            }
+        }
+
+        private void SetVerbOnPersonaImplementation(object persona, Verb verb)
+        {
+            try
+            {
+                PropertyInfo entityProperty =
+                    persona.GetType().GetProperties().FirstOrDefault(x => x.PropertyType == typeof(Verb));
+                entityProperty.SetValue(persona, verb);
             }
             catch
             {
@@ -343,7 +406,13 @@ namespace KernowCode.KTest.Ubaddas
                                 x.Name.EndsWith(domainEntityCommand.Target.GetType().Name + "." +
                                                 domainEntityCommand.Method.Name));
                 if (method == null)
-                    throw new NotImplementedException();
+                {
+                    var i = getInterfaceNameOfMethod(domainEntityCommand.Method);
+                    throw new NotImplementedException(
+                        string.Format(
+                            "Method '{0}' not coded in '{1}', make sure '{2}' interface is implemented.",
+                            domainEntityCommand.Method.Name, CurrentPersonaType.FullName, i));
+                }
                 return method;
             }
             catch (Exception exception)
@@ -363,19 +432,34 @@ namespace KernowCode.KTest.Ubaddas
             }
         }
 
+        private string getInterfaceNameOfMethod(MethodInfo concreteMethod)
+        {
+            Type classType = concreteMethod.ReflectedType;
+            foreach (var map in classType.GetInterfaces().Select(interfaceType => classType.GetInterfaceMap(interfaceType)))
+            {
+                for (var i = 0; i < map.TargetMethods.Length; i++)
+                    if (map.TargetMethods[i] == concreteMethod)
+                        return map.InterfaceMethods[i].DeclaringType.FullName;
+            }
+            return "undefined";
+        }
+
         /// <summary>
         /// New behaviour factory method
         /// </summary>
         /// <param name="businessValue">text describing the business value</param>
-        /// <param name="targetApplicationLayer">project folder name containing target test class implementations</param>
+        /// <param name="targetApplicationLayer">project folder name containing target test class implementations</param>        
+        /// <param name="appRunner">your page object model instance or other to operate the application</param>
         /// <param name="loggers">instance of loggers</param>
+        /// <param name="preStepAction"> </param>
         /// <returns>new behaviour instance</returns>
-        public static Behaviour SoThat(string businessValue, string targetApplicationLayer, Loggers loggers)
+        public static Behaviour SoThat(string businessValue, string targetApplicationLayer, object appRunner, Loggers loggers, Action preStepAction = null)
         {
             string testName = GetTestName();
             loggers.SetStartTextsToEmphasise("I want", "So that", "As", "Given", "When", "Then", "And");
             loggers.SetStartTextsToHaveSectionOpen("As");
-            return new Behaviour(targetApplicationLayer, loggers, testName, businessValue);
+            var behaviour = new Behaviour(targetApplicationLayer, appRunner, loggers, testName, businessValue, preStepAction);
+            return behaviour;
         }
 
         private static string GetTestName()
@@ -416,7 +500,7 @@ namespace KernowCode.KTest.Ubaddas
             {
                 foreach (CustomAttributeData attribute in stackFrame.GetMethod().CustomAttributes)
                 {
-                    if (new[] {"TestAttribute", "TestMethodAttribute"}.Any(x => x == attribute.AttributeType.Name))
+                    if (new[] { "TestAttribute", "TestMethodAttribute" }.Any(x => x == attribute.AttributeType.Name))
                         return stackFrame.GetMethod();
                 }
             }
@@ -427,10 +511,10 @@ namespace KernowCode.KTest.Ubaddas
 
         private static string AddPrefix(string reason)
         {
-            var disallowedPrefixes = new[] {"Should", "Test"};
+            var disallowedPrefixes = new[] { "Should", "Test" };
             foreach (string disallowedPrefix in disallowedPrefixes)
                 reason = reason.TrimStart(disallowedPrefix.ToCharArray());
-            var reasonPrefixes = new[] {"IWantTo", "IWant", "InOrderTo", "InOrder"};
+            var reasonPrefixes = new[] { "IWantTo", "IWant", "InOrderTo", "InOrder" };
             string prefix = reasonPrefixes.FirstOrDefault(x => reason.ToLower().StartsWith(x.ToLower()));
             if (!string.IsNullOrEmpty(prefix)) reason = reason.Substring(prefix.Length);
             else prefix = "IWantTo";

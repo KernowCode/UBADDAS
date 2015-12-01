@@ -15,10 +15,11 @@ namespace KernowCode.KTest.Ubaddas
         /// <para> .Given(customer.Login)</para>
         /// <para> .Given() //nothing</para>
         /// </summary>
+        /// <param name="confirmDestinationEmail"> </param>
         /// <param name="domainEntityCommand">The entitiy interface command method (without executing parenthesis)</param>
         /// <returns>Interface providing fluent methods 'And' and 'When'</returns>
         IGiven Given(Action domainEntityCommand = null);
-       
+
         /// <summary>
         /// <para>Specifies the start of the 'Given' section of BDD</para>
         /// <para>This can be followed by 'And' and 'When'</para>

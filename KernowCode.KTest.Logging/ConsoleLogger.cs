@@ -7,11 +7,13 @@ namespace KernowCode.KTest.Logging
     {
         private const int IndentSize = 2;
         private readonly int _reportLevel;
+        private readonly ILoggerEntry _loggerEntry;
         private int _indentLevel = -1;
 
-        public ConsoleLogger(int reportLevel = int.MaxValue)
+        public ConsoleLogger(ILoggerEntry consoleLoggerEnrtry, int reportLevel = int.MaxValue)
         {
             _reportLevel = reportLevel;
+            _loggerEntry = consoleLoggerEnrtry;
         }
 
         #region ILogger Members
@@ -34,6 +36,11 @@ namespace KernowCode.KTest.Logging
         public void StepsStop()
         {
             _indentLevel--;
+        }
+
+        public void WriteObject(object content)
+        {
+            WriteLine(_loggerEntry.Render(content));
         }
 
         public void WriteLine(string content)

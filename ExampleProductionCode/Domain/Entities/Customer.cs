@@ -11,14 +11,9 @@ namespace MyApplication.Domain.Entities
             Email = email;
         }
 
-        public void Register()
+        public void Registration()
         {
             Debug.WriteLine("Production persists User email");
-        }
-
-        public void Confirm_Registration()
-        {
-            Debug.WriteLine("Production send confirmation email to customers email address");
         }
 
         public void Login()

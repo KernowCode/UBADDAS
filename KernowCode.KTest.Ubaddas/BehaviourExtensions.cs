@@ -31,8 +31,8 @@ namespace KernowCode.KTest.Ubaddas
         /// <returns>Current BDD Tense (Given, When, or Then)</returns>
         public static T And<T>(this T behaviour, Action domainEntityCommand) where T : ITense
         {
-            behaviour.GetType().GetMethod("DoBehaviour", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(
-                behaviour, new object[] { "and", domainEntityCommand });
+            var method = behaviour.GetType().GetMethod("DoBehaviour", BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(behaviour, new object[] { "and", domainEntityCommand });
             return behaviour;
         }
 
@@ -48,6 +48,6 @@ namespace KernowCode.KTest.Ubaddas
             behaviour.GetType().GetMethod("DoBehaviourSet", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(
                 behaviour, new object[] { "and we", actionDelegate });
             return behaviour;
-        }     
+        }
     }
 }

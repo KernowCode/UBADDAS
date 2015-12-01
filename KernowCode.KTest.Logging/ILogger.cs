@@ -9,6 +9,7 @@ namespace KernowCode.KTest.Logging
         void SubSectionEnd();
         void StepsStart();
         void StepsStop();
+        void WriteObject(object content);
         void WriteLine(string content);
         void WriteLine(string format, string[] arg);
         IEnumerable<string> GetOutputLocation();

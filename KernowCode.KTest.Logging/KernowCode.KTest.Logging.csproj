@@ -41,6 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleLogger.cs" />
+    <Compile Include="ConsoleLoggerEntry.cs" />
+    <Compile Include="ConsoleStringLoggerEntry.cs" />
+    <Compile Include="HtmlStringLoggerEntry.cs" />
+    <Compile Include="ILoggerEntry.cs" />
     <Compile Include="ILogWithExpandableSections.cs" />
     <Compile Include="ILogWithImages.cs" />
     <Compile Include="HtmlLogger.cs" />
@@ -48,6 +52,7 @@
     <Compile Include="ConsoleLoggerMidAligned.cs" />
     <Compile Include="ILogWithEmphasis.cs" />
     <Compile Include="ILogWithMidAlign.cs" />
+    <Compile Include="LoggerEntry.cs" />
     <Compile Include="Loggers.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

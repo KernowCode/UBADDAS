@@ -9,6 +9,7 @@ namespace KernowCode.KTest.Logging
         private readonly int _leftSectionPadding;
         private readonly int _reportLevel;
         private int _indentLevel = -1;
+        private readonly ILoggerEntry _loggerEntry = new ConsoleLoggerEntry();
 
         public ConsoleLoggerMidAligned(int leftSectionPadding, int reportLevel = int.MaxValue)
         {
@@ -36,6 +37,11 @@ namespace KernowCode.KTest.Logging
         public void StepsStop()
         {
             _indentLevel--;
+        }
+
+        public void WriteObject(object content)
+        {
+            WriteLine(_loggerEntry.Render(content));
         }
 
         public void WriteLine(string content)

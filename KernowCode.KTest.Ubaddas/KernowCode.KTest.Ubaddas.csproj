@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Behaviour.cs" />
     <Compile Include="BehaviourExtensions.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="IAs.cs" />
     <Compile Include="IBase.cs" />
     <Compile Include="IState.cs" />
@@ -55,6 +56,7 @@
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StoryFeatureBase.cs" />
+    <Compile Include="Verbs.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KernowCode.KTest.Logging\KernowCode.KTest.Logging.csproj">

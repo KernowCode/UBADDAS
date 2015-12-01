@@ -37,11 +37,13 @@ namespace KernowCode.KTest.Logging
 
         public static string CapitaliseInitial(this string text)
         {
+            if (text.Length == 0) return text;
             return Char.ToUpperInvariant(text[0]) + text.Substring(1);
         }
 
         public static string DecapitaliseInitial(this string text)
         {
+            if (text.Length == 0) return text;
             return Char.ToLowerInvariant(text[0]) + text.Substring(1);
         }
     }

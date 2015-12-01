@@ -35,15 +35,16 @@ namespace KernowCode.KTest.Ubaddas
         protected IBase SoThat(TBusinessValueEnum businessValue)
         {
             var loggerFactory = LoggerFactory ?? ConfigureDefaultLoggersFactory;
-            var loggers = new Loggers(loggerFactory());
+            var loggers = new Loggers();
+            loggers.AddRange(loggerFactory());
             loggers.SetStartTextsToEmphasise("I want", "So that", "As", "Given", "When", "Then", "And");
-            return Behaviour.SoThat(businessValue.ToString(), ApplicationLayer(), loggers);
+            return Behaviour.SoThat(businessValue.ToString(), ApplicationLayer(), null, loggers);
         }
 
         private List<ILogger> ConfigureDefaultLoggersFactory()
         {
             var loggers = new List<ILogger>();
-            loggers.Add(new ConsoleLogger(Behaviour.LeftSectionPadding));            
+            loggers.Add(new ConsoleLogger(new ConsoleStringLoggerEntry(), Behaviour.LeftSectionPadding));            
             return loggers;
         }
 

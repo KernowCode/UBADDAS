@@ -23,7 +23,7 @@ namespace KernowCode.KTest.Ubaddas
         /// <param name="expressionContainingOnlyYourInstance">i.e. () => myVariableToBeNamed</param>
         public static void Named<T>(this T instance, Expression<Func<T>> expressionContainingOnlyYourInstance)
         {
-            var name = ((MemberExpression) expressionContainingOnlyYourInstance.Body).Member.Name;
+            var name = ((MemberExpression)expressionContainingOnlyYourInstance.Body).Member.Name;
             instance.Named(name);
         }
 
@@ -40,7 +40,7 @@ namespace KernowCode.KTest.Ubaddas
             else NamedInstances.Add(instance, named);
             return instance;
         }
-        
+
         /// <summary>
         /// Gets the recorded name for the instance, or the instance type name if not previously recorded using .Named extension
         /// </summary>

@@ -5,19 +5,14 @@ using KernowCode.KTest.Logging;
 
 namespace TestProject.Personas.Presentation
 {
-    public partial class WebUser : ICustomer
+    public partial class WebUser : Personas.WebUser, ITestCustomer
     {
-        public ILogger Log { get; set; }
-        public Customer Customer { get; set; }
-
-        public void Register()
+        public void Registration()
         {
-            Log.WriteLine(string.Format("Presentation layer regsiter step would register {0} customer email.", Customer.Email));
-        }
-
-        public void Confirm_Registration()
-        {
-            Log.WriteLine("Presentation layer confirm registration step would check email send/recieved using fake smtp server");
+            if (Verb.Value == "completed") 
+                Log.WriteLine(string.Format("Presentation layer regsiter step would register {0} customer email.", TestCustomerEntity.Email));
+            else if (Verb.Value == "confirmed")
+                Log.WriteLine("Presentation layer confirm registration step would check email send/recieved using fake smtp server");
         }
 
         public void Login()

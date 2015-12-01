@@ -8,14 +8,24 @@ namespace KernowCode.KTest.Logging
     public class Loggers : ILogger, ILogWithEmphasis, ILogWithImages, ILogWithExpandableSections
     {
         public const string MidAlignSeparator = "<>";
-        private readonly IList<ILogger> _loggers;
+        private readonly IList<ILogger> _loggers = new List<ILogger>();
         private bool _NotDisposed = true;
         private string _cacheContent = "";
 
-        public Loggers(IList<ILogger> loggers)
-        {
-            _loggers = loggers;
+        public Loggers()
+        {            
             WriteOutputLocations(GetOutputLocation());
+        }
+
+        public void Add(ILogger logger)
+        {
+            if (_loggers.Any(x=>x.GetType() == logger.GetType()) == false)
+                _loggers.Add(logger);
+        }
+
+        public void AddRange(IEnumerable<ILogger> loggers)
+        {
+            foreach (var logger in loggers) Add(logger);
         }
 
         #region ILogger Members
@@ -38,6 +48,11 @@ namespace KernowCode.KTest.Logging
         public void StepsStop()
         {
             WithLoggers(x => x.StepsStop());
+        }
+
+        public void WriteObject(object content)
+        {
+            WithLoggers(x=>x.WriteObject(content));
         }
 
         public void WriteLine(string content)
